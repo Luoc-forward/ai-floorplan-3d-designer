@@ -33,3 +33,6 @@ web/css/style.dark-backup.css
 
 # PRD 文档仅本地保留
 PRD-*.md
+
+# 参赛征文仅本地保留
+征文-*.md
