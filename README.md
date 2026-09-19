@@ -78,7 +78,6 @@ python server.py 8765
 ├── .ark-key                 # 旧版本地 Key（可选，已 gitignore）
 ├── config/
 │   └── ark-config.example.json  # 配置字段示例（可提交）
-├── PRD-AI户型3D设计器.md
 └── web/
     ├── index.html
     ├── css/style.css

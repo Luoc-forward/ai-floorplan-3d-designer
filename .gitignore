@@ -30,3 +30,6 @@ web/css/style.dark-backup.css
 
 # 本地临时脚本
 /_*.py
+
+# PRD 文档仅本地保留
+PRD-*.md
