@@ -91,10 +91,9 @@
   <div class="mask-card help-card settings-card">
     <button class="help-close" id="btnSettingsClose" title="关闭">✕</button>
     <h3>模型设置</h3>
-    <p class="settings-tip">配置大模型视觉识别接口，参数保存在本机服务端配置文件中（<code>.ark-config.json</code>），不会写死在代码里，也不会上传到别处。留空 API Key 表示不修改已保存的值。</p>
 
     <div class="field">
-      <label>接口地址 Base URL</label>
+      <label>接口地址</label>
       <input type="text" id="setBaseUrl" placeholder="https://ark.cn-beijing.volces.com/api/plan/v3">
     </div>
     <div class="field">
@@ -103,8 +102,7 @@
     </div>
     <div class="field">
       <label>API Key</label>
-      <input type="password" id="setApiKey" placeholder="填写后保存；留空则保持不变" autocomplete="off">
-      <div id="keyState" class="key-state"></div>
+      <input type="password" id="setApiKey" placeholder="请输入 API Key" autocomplete="off">
     </div>
 
     <div id="setMsg" class="set-msg"></div>
@@ -112,10 +110,8 @@
     <div class="settings-btns">
       <button class="btn" id="btnConnTest">🔌 测试连接</button>
       <span class="spacer"></span>
-      <button class="btn danger" id="btnClearKey">清除 Key</button>
       <button class="btn primary" id="btnSaveSettings">保存设置</button>
     </div>
-    <div class="settings-env-hint">提示：也可用环境变量 <code>ARK_API_KEY</code> / <code>ARK_BASE_URL</code> / <code>ARK_MODEL</code> 配置；网页设置优先于环境变量。</div>
   </div>
 </div>
 <!-- ============ 使用指南 ============ -->

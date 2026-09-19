@@ -103,7 +103,9 @@ class App {
   bindSettings() {
     const mask = $("#settingsMask");
     const msg = $("#setMsg");
+    let hasKey = false;
     const setMsg = (text, ok) => { msg.textContent = text || ""; msg.className = "set-msg" + (ok ? " ok" : text ? " err" : ""); };
+
     const open = async () => {
       mask.classList.remove("hidden");
       setMsg("");
@@ -112,17 +114,9 @@ class App {
         const j = await fetch("/api/config").then(r => r.json());
         $("#setBaseUrl").value = j.baseUrl || "";
         $("#setModel").value = j.model || "";
-        const ks = $("#keyState");
-        if (j.hasKey) {
-          const src = j.keySource === "file" ? "本机配置" : j.keySource === "env" ? "环境变量" : j.keySource === "legacy" ? "旧版 .ark-key" : "";
-          ks.textContent = `已配置 API Key（${j.keyMask}）· 来源：${src}`;
-          ks.className = "key-state ok";
-        } else {
-          ks.textContent = "尚未配置 API Key";
-          ks.className = "key-state err";
-        }
+        hasKey = !!j.hasKey;
       } catch {
-        setMsg("无法读取服务端配置（需通过本地服务访问，不能直接双击打开 HTML）", false);
+        setMsg("配置读取失败", false);
       }
     };
     const close = () => mask.classList.add("hidden");
@@ -138,46 +132,31 @@ class App {
 
     $("#btnSaveSettings").onclick = async () => {
       const c = collect();
-      if (!c.baseUrl || !c.model) return setMsg("接口地址和模型名称不能为空", false);
+      if (!c.baseUrl || !c.model) return setMsg("请填写接口地址和模型名称", false);
+      if (!c.apiKey && !hasKey) return setMsg("请输入 API Key", false);
       setMsg("正在保存…", true);
       try {
         const j = await fetch("/api/config/save", {
           method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(c),
         }).then(r => r.json());
         if (j.error) return setMsg(j.error, false);
+        hasKey = !!j.hasKey;
         $("#setApiKey").value = "";
-        setMsg("已保存，识别将使用新配置", true);
+        setMsg("已保存", true);
         this.checkConfig();
-        const ks = $("#keyState");
-        if (j.hasKey) { ks.textContent = `已配置 API Key（${j.keyMask}）`; ks.className = "key-state ok"; }
       } catch (e) { setMsg("保存失败：" + e.message, false); }
-    };
-
-    $("#btnClearKey").onclick = async () => {
-      setMsg("正在清除…", true);
-      try {
-        const j = await fetch("/api/config/save", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ clearKey: true }),
-        }).then(r => r.json());
-        $("#setApiKey").value = "";
-        const ks = $("#keyState");
-        ks.textContent = j.hasKey ? `仍有可用 Key（${j.keyMask}，来自环境变量/旧文件）` : "已清除本机保存的 API Key";
-        ks.className = j.hasKey ? "key-state ok" : "key-state err";
-        setMsg("已操作", true);
-        this.checkConfig();
-      } catch (e) { setMsg("清除失败：" + e.message, false); }
     };
 
     $("#btnConnTest").onclick = async () => {
       const c = collect();
-      if (!c.baseUrl || !c.model) return setMsg("接口地址和模型名称不能为空", false);
-      setMsg("正在向模型发送测试请求（约 5~15 秒）…", true);
+      if (!c.baseUrl || !c.model) return setMsg("请填写接口地址和模型名称", false);
+      if (!c.apiKey && !hasKey) return setMsg("请输入 API Key", false);
+      setMsg("正在测试连接…", true);
       try {
         const j = await fetch("/api/config/test", {
           method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(c),
         }).then(r => r.json());
-        if (j.ok) setMsg(`连接成功 ✓ 模型 ${j.model} 响应 ${j.elapsed}s`, true);
+        if (j.ok) setMsg(`连接成功（${j.elapsed}s）`, true);
         else setMsg(j.error || "连接失败", false);
       } catch (e) { setMsg("连接失败：" + e.message, false); }
     };
