@@ -76,9 +76,9 @@ def save_config(data):
         except Exception:
             cfg = {}
     if "baseUrl" in data:
-        cfg["baseUrl"] = (data.get("baseUrl") or DEFAULT_BASE_URL).strip().rstrip("/")
+        cfg["baseUrl"] = (data.get("baseUrl") or "").strip().rstrip("/")
     if "model" in data:
-        cfg["model"] = (data.get("model") or DEFAULT_MODEL).strip()
+        cfg["model"] = (data.get("model") or "").strip()
     if data.get("apiKey"):
         cfg["apiKey"] = data["apiKey"].strip()
     if data.get("clearKey"):
@@ -101,9 +101,24 @@ def mask_key(key):
     return (("*" * max(0, len(key) - 4)) + key[-4:]) if key else ""
 
 
+def raw_configured():
+    """仅返回用户显式配置（文件/环境变量）的值；未配置返回空串，用于前端展示。"""
+    file_cfg = {}
+    if os.path.exists(CONFIG_PATH):
+        try:
+            with open(CONFIG_PATH, encoding="utf-8") as f:
+                file_cfg = json.load(f)
+        except Exception:
+            file_cfg = {}
+    base_url = (file_cfg.get("baseUrl") or os.environ.get("ARK_BASE_URL") or "").strip().rstrip("/")
+    model = (file_cfg.get("model") or os.environ.get("ARK_MODEL") or "").strip()
+    return base_url, model
+
+
 def public_config():
     c = load_config()
-    return {"hasKey": bool(c["apiKey"]), "model": c["model"], "baseUrl": c["baseUrl"],
+    base_url, model = raw_configured()
+    return {"hasKey": bool(c["apiKey"]), "model": model, "baseUrl": base_url,
             "keyMask": mask_key(c["apiKey"]), "keySource": c["keySource"]}
 
 

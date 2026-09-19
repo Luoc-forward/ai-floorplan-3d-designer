@@ -23,20 +23,22 @@ python server.py 8765
 **方式一：在页面里配置（推荐）**
 
 1. 启动后打开首页，点右上角「⚙️ 模型设置」；
-2. 填写接口地址（默认 `https://ark.cn-beijing.volces.com/api/plan/v3`）、模型名（默认 `doubao-seed-evolving`）、API Key；
+2. 分别填写接口地址、模型名、API Key（输入框默认为空，需自行填写）：
+   - 火山方舟示例：接口地址填 `https://ark.cn-beijing.volces.com/api/plan/v3`，模型名填你账号下可用的模型（如 `doubao-seed-evolving`）；
+   - 其他兼容 OpenAI 接口格式（`/chat/completions`）的视觉模型服务，填写对应的基础地址与模型名即可；
 3. 点「🔌 测试连接」验证通过后「保存设置」即可。
 
-配置保存在服务端根目录的 `.ark-config.json`（仅本机，已在 `.gitignore`，不会提交）；API Key 在界面上只显示末 4 位掩码。
+配置保存在服务端根目录的 `.ark-config.json`（仅本机，已在 `.gitignore`，不会提交）。
 
 **方式二：环境变量**
 
 - `ARK_API_KEY`：API Key
-- `ARK_BASE_URL`：接口地址（可选，覆盖默认值）
-- `ARK_MODEL`：模型名（可选，覆盖默认值）
+- `ARK_BASE_URL`：接口地址
+- `ARK_MODEL`：模型名
 
 **方式三（兼容旧版）**：在根目录新建 `.ark-key`，只写一行 Key。
 
-**配置优先级**：页面保存的 `.ark-config.json` > 环境变量 > 代码内置默认值（默认值只含接口地址和模型名，**不含任何 Key**）。
+**配置优先级**：页面保存的 `.ark-config.json` > 环境变量 > 代码内置兜底值（兜底值只含火山方舟的接口地址和模型名，**不含任何 Key**；未填写时设置页显示为空）。
 
 > API Key 只保存在你自己运行的后端，浏览器只通过后端代理调用，不会出现在前端代码里；未配置 Key 时识别不可用，但仍可用「内置示例户型」和「空白画布手动画墙」体验全部编辑 / 3D / 漫游 / 导出功能。
 >

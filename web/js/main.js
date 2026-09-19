@@ -55,7 +55,7 @@ class App {
     try {
       const r = await fetch("/api/config"); const j = await r.json();
       const el = $("#apiStatus");
-      if (j.hasKey) { el.textContent = `✅ 识别 API 已就绪（模型 ${j.model}）`; el.className = "api-status ok"; }
+      if (j.hasKey) { el.textContent = j.model ? `✅ 识别 API 已就绪（模型 ${j.model}）` : "✅ 识别 API 已就绪"; el.className = "api-status ok"; }
       else { el.textContent = "⚠️ 未配置 ARK_API_KEY，识别不可用，但可使用示例户型/手动画墙"; el.className = "api-status err"; }
     } catch { /* 非服务器环境 */ }
   }
