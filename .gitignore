@@ -1,0 +1,32 @@
+# ===== 本机模型配置（含 API Key，切勿提交）=====
+.ark-key
+.ark-config.json
+
+# ===== Python =====
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# ===== 调试 / 临时产物 =====
+_patch_server.py
+debug-*.png
+walk-*.png
+furniture-size-edit.png
+test_*.png
+test_*.json
+
+# ===== 系统 / 编辑器 =====
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+
+
+# 本地样式备份
+web/css/style.dark-backup.css
+
+# 本地临时脚本
+/_*.py

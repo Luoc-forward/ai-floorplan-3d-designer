@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 户型 3D 设计器</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ 首页：上传 ============ -->
+<section id="home" class="home">
+  <nav class="home-nav">
+    <div class="nav-brand"><span class="nav-logo">🏠</span> AI 户型 3D 设计器</div>
+    <div class="nav-actions">
+      <button class="btn ghost mini" id="btnSettings">⚙️ 模型设置</button>
+      <button class="btn ghost mini" id="btnHelp">📖 使用指南</button>
+    </div>
+  </nav>
+
+  <div class="home-inner">
+    <div class="brand">
+      <div class="logo">🏠</div>
+      <h1>AI 户型 3D 设计器</h1>
+      <p class="sub">上传一张户型图，AI 自动识别墙体、门窗、尺寸，秒级生成可漫游的 3D 家；自由编辑户型、摆放家具、更换配色，并可导出修改后的户型图。</p>
+    </div>
+
+    <div id="dropzone" class="dropzone" tabindex="0">
+      <div class="dz-icon">📤</div>
+      <div class="dz-main">点击选择 / 拖拽 / Ctrl+V 粘贴 户型图</div>
+      <div class="dz-sub">支持 JPG · PNG · WEBP · 拍照图片（≤ 20MB）</div>
+      <input type="file" id="fileInput" accept="image/*" hidden>
+    </div>
+
+    <div class="home-options">
+      <label class="opt"><input type="checkbox" id="optThinking"> <span>AI 精修模式（复杂图纸，约 2~4 分钟，默认快速模式约 20 秒）</span></label>
+      <div id="apiStatus" class="api-status"></div>
+    </div>
+
+    <div class="quick-label">或选择其他方式开始</div>
+    <div class="quick-grid">
+      <button class="quick-card" data-sample="1">
+        <span class="qc-ico">🛋️</span>
+        <span class="qc-txt"><b>一室一厅示例</b><small>真实 AI 识别结果，带原图校准</small></span>
+      </button>
+      <button class="quick-card" data-sample="2">
+        <span class="qc-ico">🏢</span>
+        <span class="qc-txt"><b>两居室示例</b><small>内置手工户型，含示意家具</small></span>
+      </button>
+      <button class="quick-card" data-sample="draw">
+        <span class="qc-ico">✏️</span>
+        <span class="qc-txt"><b>空白画布手绘</b><small>从零开始，自己画墙放门窗</small></span>
+      </button>
+      <button class="quick-card" id="btnImportJson">
+        <span class="qc-ico">📂</span>
+        <span class="qc-txt"><b>导入方案 JSON</b><small>恢复之前导出 / 备份的方案</small></span>
+      </button>
+      <input type="file" id="jsonInput" accept=".json,application/json" hidden>
+    </div>
+
+    <div id="recentWrap" class="recent-wrap hidden">
+      <div class="recent-head">
+        <h3>🕘 最近方案</h3>
+        <button class="btn ghost mini" id="btnClearRecent">清空</button>
+      </div>
+      <div id="recentList" class="recent-list"></div>
+    </div>
+
+    <ol class="steps">
+      <li><span class="step-no">1</span><div><b>上传 / 识别</b><p>AI 自动提取墙体、门窗、尺寸与房间</p></div></li>
+      <li><span class="step-no">2</span><div><b>2D 校图</b><p>拖拽底图、增删墙门窗、校准实际尺寸</p></div></li>
+      <li><span class="step-no">3</span><div><b>3D 漫游 / 导出</b><p>摆家具换配色，第一人称漫游并导出</p></div></li>
+    </ol>
+
+    <div class="features">
+      <div class="feat"><b>🧱 AI 识图</b>墙体 / 门窗 / 飘窗 / 尺寸 / 房间语义</div>
+      <div class="feat"><b>🛠 2D 校图</b>增删改墙门窗，手动校准尺寸</div>
+      <div class="feat"><b>🚶 3D 漫游</b>第一人称碰撞行走，门可开合</div>
+      <div class="feat"><b>🛋 家具编辑</b>拖拽摆放、旋转缩放、改色</div>
+      <div class="feat"><b>🎨 配色材质</b>墙面地板一键换风格</div>
+      <div class="feat"><b>💾 导出分享</b>修改后户型图 PNG / SVG / JSON / 截图</div>
+    </div>
+
+    <footer class="home-footer">AI 户型 3D 设计器 · 所有数据仅保存在本机浏览器，不会上传你的图纸</footer>
+  </div>
+</section>
+
+<!-- ============ 模型设置 ============ -->
+<div id="settingsMask" class="mask hidden">
+  <div class="mask-card help-card settings-card">
+    <button class="help-close" id="btnSettingsClose" title="关闭">✕</button>
+    <h3>模型设置</h3>
+    <p class="settings-tip">配置大模型视觉识别接口，参数保存在本机服务端配置文件中（<code>.ark-config.json</code>），不会写死在代码里，也不会上传到别处。留空 API Key 表示不修改已保存的值。</p>
+
+    <div class="field">
+      <label>接口地址 Base URL</label>
+      <input type="text" id="setBaseUrl" placeholder="https://ark.cn-beijing.volces.com/api/plan/v3">
+    </div>
+    <div class="field">
+      <label>模型名称</label>
+      <input type="text" id="setModel" placeholder="doubao-seed-evolving">
+    </div>
+    <div class="field">
+      <label>API Key</label>
+      <input type="password" id="setApiKey" placeholder="填写后保存；留空则保持不变" autocomplete="off">
+      <div id="keyState" class="key-state"></div>
+    </div>
+
+    <div id="setMsg" class="set-msg"></div>
+
+    <div class="settings-btns">
+      <button class="btn" id="btnConnTest">🔌 测试连接</button>
+      <span class="spacer"></span>
+      <button class="btn danger" id="btnClearKey">清除 Key</button>
+      <button class="btn primary" id="btnSaveSettings">保存设置</button>
+    </div>
+    <div class="settings-env-hint">提示：也可用环境变量 <code>ARK_API_KEY</code> / <code>ARK_BASE_URL</code> / <code>ARK_MODEL</code> 配置；网页设置优先于环境变量。</div>
+  </div>
+</div>
+<!-- ============ 使用指南 ============ -->
+<div id="helpMask" class="mask hidden">
+  <div class="mask-card help-card">
+    <button class="help-close" id="btnHelpClose" title="关闭">✕</button>
+    <h3>使用指南</h3>
+    <div class="help-body">
+      <div class="help-row"><b>① 上传识别</b><p>在首页上传 / 拖拽 / 粘贴户型图，等待 AI 识别；复杂图纸可勾选「精修模式」。</p></div>
+      <div class="help-row"><b>② 2D 校图</b><p>用顶部工具增删墙、门、窗；点「📏 校准」拉一段已知尺寸（如 9000mm）确定真实比例；底图可用「🖼 拖底图」对齐。</p></div>
+      <div class="help-row"><b>③ 生成 3D</b><p>点顶栏「生成 / 刷新 3D」。左键旋转、右键平移、滚轮缩放；家具可拖动，Q/E 旋转、R/F 缩放。</p></div>
+      <div class="help-row"><b>④ 第一人称漫游</b><p>切「🚶 漫游」后点击画面锁定鼠标，W/A/S/D 移动、鼠标转向、Shift 加速；手机用左下摇杆。</p></div>
+      <div class="help-row"><b>⑤ 家具与配色</b><p>左侧「家具」拖入房间，「配色」可整屋换风格或单选房间改地面；右侧属性面板精细编辑。</p></div>
+      <div class="help-row"><b>⑥ 导出</b><p>支持白底户型图 PNG、叠加原图 PNG、矢量 SVG、3D 截图和方案 JSON；JSON 可在首页重新导入。</p></div>
+      <div class="help-keys">
+        <span><kbd>Ctrl</kbd>+<kbd>Z</kbd> 撤销</span>
+        <span><kbd>Ctrl</kbd>+<kbd>Y</kbd> 重做</span>
+        <span><kbd>Ctrl</kbd>+<kbd>V</kbd> 粘贴图片</span>
+        <span><kbd>Q</kbd>/<kbd>E</kbd> 旋转家具</span>
+        <span><kbd>R</kbd>/<kbd>F</kbd> 缩放家具</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 识别进度 ============ -->
+<div id="recognizing" class="mask hidden">
+  <div class="mask-card">
+    <div class="spinner"></div>
+    <h3 id="recTitle">AI 正在识别户型…</h3>
+    <p id="recStep">上传图片中…</p>
+    <div class="progress"><div id="recBar" class="bar"></div></div>
+    <p class="hint" id="recHint"></p>
+  </div>
+</div>
+
+<!-- ============ 编辑器 ============ -->
+<section id="editor" class="editor hidden">
+
+  <!-- 顶栏 -->
+  <header class="topbar">
+    <button class="btn ghost" id="btnHome">← 首页</button>
+    <input id="planName" class="plan-name" value="我的户型" title="方案名称">
+    <div class="view-switch">
+      <button class="btn seg active" data-view="2d">2D 校图</button>
+      <button class="btn seg" data-view="3d">3D 编辑</button>
+      <button class="btn seg" data-view="walk">🚶 漫游</button>
+    </div>
+    <div class="top-actions">
+      <button class="btn" id="btnUndo" title="撤销 Ctrl+Z">↶ 撤销</button>
+      <button class="btn" id="btnRedo" title="重做 Ctrl+Y">↷ 重做</button>
+      <button class="btn primary" id="btnBuild">🧊 生成/刷新 3D</button>
+      <div class="dropdown">
+        <button class="btn primary" id="btnExport">💾 导出 ▾</button>
+        <div class="menu hidden" id="exportMenu">
+          <button data-exp="png">修改后户型图 PNG（白底）</button>
+          <button data-exp="pngbg">户型图 PNG（叠加原图）</button>
+          <button data-exp="svg">矢量户型图 SVG</button>
+          <button data-exp="shot">当前 3D 视图截图 PNG</button>
+          <button data-exp="json">方案数据 JSON</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="workspace">
+
+    <!-- 左侧库 -->
+    <aside class="leftpanel" id="leftPanel">
+      <div class="tabs" id="leftTabs">
+        <button class="tab active" data-tab="furn">家具</button>
+        <button class="tab" data-tab="mat">配色</button>
+        <button class="tab" data-tab="room">房间</button>
+      </div>
+
+      <div class="tabbody" data-tab="furn">
+        <input id="furnSearch" class="search" placeholder="搜索家具…">
+        <div id="furnList" class="furn-list"></div>
+      </div>
+      <div class="tabbody hidden" data-tab="mat">
+        <div class="mat-section">
+          <h4>涂刷对象</h4>
+          <div id="matTargets" class="mat-targets"></div>
+          <h4>预设风格（点击应用全屋）</h4>
+          <div id="themeList" class="theme-list"></div>
+          <h4>墙面漆颜色</h4>
+          <div id="wallColors" class="swatches"></div>
+          <h4>地面材质</h4>
+          <div id="floorMats" class="mat-list"></div>
+        </div>
+      </div>
+      <div class="tabbody hidden" data-tab="room">
+        <div id="roomList" class="room-list"></div>
+      </div>
+    </aside>
+
+    <!-- 中央视图 -->
+    <main class="stage">
+      <div id="view2d" class="view2d">
+        <div class="canvas-tools">
+          <button class="btn mini active" data-tool="select">⬚ 选择</button>
+          <button class="btn mini" data-tool="wall">╱ 画墙</button>
+          <button class="btn mini" data-tool="door">🚪 放门</button>
+          <button class="btn mini" data-tool="window">▭ 放窗</button>
+          <button class="btn mini" data-tool="calib">📏 校准</button>
+          <button class="btn mini" data-tool="bgmove">🖼 拖底图</button>
+          <button class="btn mini danger" data-tool="erase">✕ 删除</button>
+          <button class="btn mini" id="btnOrthogonize">🧲 一键方正墙体</button>
+          <span class="ctool-hint" id="toolHint"></span>
+          <label class="bg-toggle"><input type="checkbox" id="toggleBg" checked> 显示原图</label>
+        </div>
+        <canvas id="canvas2d"></canvas>
+        <div class="canvas-footer">
+          <span id="scaleInfo"></span>
+          <span class="spacer"></span>
+          <button class="btn mini" id="btnFitAll">适应全屋</button>
+          <button class="btn mini" id="btnBgReset">底图复位</button>
+          <button class="btn mini" id="btnCalibDefault">尺寸未知？按门宽900估算</button>
+        </div>
+      </div>
+
+      <div id="view3d" class="view3d hidden">
+        <canvas id="canvas3d"></canvas>
+        <div class="hud3d">
+          <div class="hud-keys">
+            <span>左键旋转 · 右键平移 · 滚轮缩放</span>
+            <span>拖入家具后：拖动移动 · <b>Q/E</b> 旋转 · <b>R/F</b> 缩放</span>
+          </div>
+          <div class="hud-btns">
+            <button class="btn mini" id="btnSun">☀️ 日景</button>
+            <button class="btn mini" id="btnNight">🌙 夜景</button>
+            <button class="btn mini" id="btnTop">🔽 俯视</button>
+            <button class="btn mini" id="btnEye">👁 人视</button>
+            <button class="btn mini" id="btnCeil">天花板开关</button>
+          </div>
+        </div>
+        <!-- 漫游触控/准星 -->
+        <div id="crosshair" class="crosshair hidden">＋</div>
+        <div id="joyZone" class="joyzone hidden"><div id="joyKnob" class="knob"></div></div>
+        <div id="minimap" class="minimap"><canvas id="miniCv" width="160" height="120"></canvas></div>
+      </div>
+    </main>
+
+    <!-- 右侧属性面板 -->
+    <aside class="rightpanel" id="rightPanel">
+      <h3 id="propTitle">属性</h3>
+      <div id="propBody" class="prop-body"></div>
+    </aside>
+  </div>
+</section>
+
+<div id="toast" class="toast hidden"></div>
+
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.js", "three/addons/": "./vendor/" } }
+</script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

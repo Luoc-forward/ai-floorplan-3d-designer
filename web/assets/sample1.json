@@ -1,0 +1,437 @@
+{
+  "walls": [
+    {
+      "id": "w1",
+      "from": [
+        125,
+        170
+      ],
+      "to": [
+        289,
+        170
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    },
+    {
+      "id": "w2",
+      "from": [
+        467,
+        170
+      ],
+      "to": [
+        636,
+        170
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    },
+    {
+      "id": "w3",
+      "from": [
+        794,
+        170
+      ],
+      "to": [
+        875,
+        170
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    },
+    {
+      "id": "w4",
+      "from": [
+        875,
+        170
+      ],
+      "to": [
+        875,
+        830
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    },
+    {
+      "id": "w5",
+      "from": [
+        875,
+        830
+      ],
+      "to": [
+        322,
+        830
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    },
+    {
+      "id": "w6",
+      "from": [
+        244,
+        830
+      ],
+      "to": [
+        125,
+        830
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    },
+    {
+      "id": "w7",
+      "from": [
+        125,
+        830
+      ],
+      "to": [
+        125,
+        558
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    },
+    {
+      "id": "w8",
+      "from": [
+        125,
+        332
+      ],
+      "to": [
+        125,
+        170
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    },
+    {
+      "id": "w9",
+      "from": [
+        550,
+        170
+      ],
+      "to": [
+        550,
+        332
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    },
+    {
+      "id": "w10",
+      "from": [
+        550,
+        435
+      ],
+      "to": [
+        550,
+        527
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    },
+    {
+      "id": "w11",
+      "from": [
+        550,
+        527
+      ],
+      "to": [
+        550,
+        500
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    },
+    {
+      "id": "w12",
+      "from": [
+        550,
+        500
+      ],
+      "to": [
+        628,
+        500
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    },
+    {
+      "id": "w13",
+      "from": [
+        711,
+        500
+      ],
+      "to": [
+        875,
+        500
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    },
+    {
+      "id": "w14",
+      "from": [
+        244,
+        830
+      ],
+      "to": [
+        244,
+        708
+      ],
+      "thicknessMm": 200,
+      "loadBearing": true
+    }
+  ],
+  "doors": [
+    {
+      "id": "d1",
+      "wallId": "w5",
+      "at": [
+        322,
+        830
+      ],
+      "widthMm": 900,
+      "kind": "swing",
+      "hingeSide": "left",
+      "opensInward": true
+    },
+    {
+      "id": "d2",
+      "wallId": "w9",
+      "at": [
+        550,
+        332
+      ],
+      "widthMm": 900,
+      "kind": "swing",
+      "hingeSide": "left",
+      "opensInward": true
+    },
+    {
+      "id": "d3",
+      "wallId": "w12",
+      "at": [
+        628,
+        500
+      ],
+      "widthMm": 900,
+      "kind": "sliding",
+      "hingeSide": "right",
+      "opensInward": true
+    }
+  ],
+  "windows": [
+    {
+      "id": "win1",
+      "wallId": "w1",
+      "from": [
+        289,
+        170
+      ],
+      "to": [
+        467,
+        170
+      ],
+      "kind": "normal",
+      "sillMm": 900
+    },
+    {
+      "id": "win2",
+      "wallId": "w2",
+      "from": [
+        636,
+        170
+      ],
+      "to": [
+        794,
+        170
+      ],
+      "kind": "bay",
+      "sillMm": 900
+    },
+    {
+      "id": "win3",
+      "wallId": "w7",
+      "from": [
+        125,
+        558
+      ],
+      "to": [
+        125,
+        332
+      ],
+      "kind": "normal",
+      "sillMm": 900
+    },
+    {
+      "id": "win4",
+      "wallId": "w4",
+      "from": [
+        875,
+        500
+      ],
+      "to": [
+        875,
+        780
+      ],
+      "kind": "normal",
+      "sillMm": 900
+    }
+  ],
+  "rooms": [
+    {
+      "id": "r1",
+      "name": "客厅",
+      "type": "living_room",
+      "polygon": [
+        [
+          125,
+          170
+        ],
+        [
+          550,
+          170
+        ],
+        [
+          550,
+          527
+        ],
+        [
+          244,
+          527
+        ],
+        [
+          244,
+          830
+        ],
+        [
+          125,
+          830
+        ]
+      ]
+    },
+    {
+      "id": "r2",
+      "name": "餐厅",
+      "type": "dining_room",
+      "polygon": [
+        [
+          244,
+          527
+        ],
+        [
+          550,
+          527
+        ],
+        [
+          550,
+          830
+        ],
+        [
+          244,
+          830
+        ]
+      ]
+    },
+    {
+      "id": "r3",
+      "name": "主卧",
+      "type": "bedroom",
+      "polygon": [
+        [
+          550,
+          170
+        ],
+        [
+          875,
+          170
+        ],
+        [
+          875,
+          500
+        ],
+        [
+          550,
+          500
+        ],
+        [
+          550,
+          435
+        ]
+      ]
+    },
+    {
+      "id": "r4",
+      "name": "厨房",
+      "type": "kitchen",
+      "polygon": [
+        [
+          550,
+          500
+        ],
+        [
+          875,
+          500
+        ],
+        [
+          875,
+          830
+        ],
+        [
+          550,
+          830
+        ]
+      ]
+    }
+  ],
+  "dimensions": [
+    {
+      "text": "6000",
+      "from": [
+        75,
+        830
+      ],
+      "to": [
+        75,
+        170
+      ]
+    },
+    {
+      "text": "3000",
+      "from": [
+        925,
+        500
+      ],
+      "to": [
+        925,
+        170
+      ]
+    },
+    {
+      "text": "9000",
+      "from": [
+        125,
+        900
+      ],
+      "to": [
+        875,
+        900
+      ]
+    },
+    {
+      "text": "5000",
+      "from": [
+        125,
+        957
+      ],
+      "to": [
+        542,
+        957
+      ]
+    }
+  ],
+  "entranceDoorId": "d1",
+  "northDirectionDeg": 0,
+  "notes": ""
+}
